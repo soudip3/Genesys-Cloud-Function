@@ -14,18 +14,34 @@ export const handler = async(event, context, callback) => {
 	const environment = event.environment
 	const queuesId = event.queuesId
 	const accessToken = await authentication(clientId, clientSecret, environment)
-	const getUser = await getSLA(accessToken, environment, queuesId)
+	const getSlaDetails = await getSLA(accessToken, environment, queuesId)
+	let jsonResult = {}
 	try{
-		for(let i=0; i<getUser.results.length; i++){
-			console.log(`User id ${i}: `+ getUser.results[i].entities[0].userId)
-			console.log(`User activityDate ${i}: `+ getUser.results[i].entities[0].activityDate)
-			console.log(`Queue id ${i}: `+ getUser.results[i].group.queueId)
+		let longestIdleAgentIndex = 0
+		let dateTime = "2000-07-28T08:08:33.720Z"
+		for(let i=0; i<getSlaDetails.results.length; i++){
+			if(dateTime<getSlaDetails.results[i].entities[0].activityDate){
+				dateTime = getSlaDetails.results[i].entities[0].activityDate
+				longestIdleAgentIndex = i
+			}
+		}
+		jsonResult = {
+			"userId" : getSlaDetails.results[longestIdleAgentIndex].entities[0].userId,
+			"activityTime" : getSlaDetails.results[longestIdleAgentIndex].entities[0].activityDate,
+			"queueId" : getSlaDetails.results[longestIdleAgentIndex].group.queueId,
+			"result" : 1
 		}
 	}
 	catch{
-		console.log("All agents are offline")
+		jsonResult = {
+			"userId" : "",
+			"activityTime" : "",
+			"queueId" : "",
+			"result" : 0
+		}
 	}
-	console.log(JSON.stringify(getUser))
+	console.log(jsonResult)
+	return jsonResult
 }
 
 //handler()
