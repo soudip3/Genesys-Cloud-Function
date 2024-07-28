@@ -8,11 +8,12 @@ export const handler = async(event, context, callback) => {
     // const clientId = process.env.clientId
     // const clientSecret = process.env.clientSecret
     // const environment = process.env.environment
-	// const queuesId = ["d8e08b26-402d-490e-a433-b2348a0b9f17","37a8972f-9875-488f-bcd7-3f63a6eb4e53"]
+	// const queuesId = ["81ee22da-b027-481c-8135-3742da0d8639","73aa14fa-54d4-4bf4-8964-5038d9fd8129"]
 	const clientId = event.clientId
 	const clientSecret = event.clientSecret
 	const environment = event.environment
-	const queuesId = event.queuesId
+	const queuesIdString = event.queuesId
+	const queuesId = queuesIdString.split(",")
 	const accessToken = await authentication(clientId, clientSecret, environment)
 	const getSlaDetails = await getSLA(accessToken, environment, queuesId)
 	let jsonResult = {}
