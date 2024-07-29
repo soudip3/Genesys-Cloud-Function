@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 
-export const getSLA = async (access_token, environment, queuesId) => {
+export const getQueueData = async (access_token, environment, queuesId) => {
+    // creating body
     const params ={
         "subscribe": true,
         "metrics": [
@@ -48,6 +49,7 @@ export const getSLA = async (access_token, environment, queuesId) => {
             ]
         }
     };
+    // adding dynamic values in predicates array
     for (let i =0; i<queuesId.length; i++){
         params.filter.clauses[1].predicates
         .push({
@@ -55,6 +57,7 @@ export const getSLA = async (access_token, environment, queuesId) => {
             "value": `${queuesId[i]}`
         })
     }
+    // fetching routing activity query
 	const response = await fetch(`https://api.${environment}/api/v2/analytics/routing/activity/query`, {
 		method: 'POST',
 		headers: {
@@ -64,5 +67,6 @@ export const getSLA = async (access_token, environment, queuesId) => {
 		body: JSON.stringify(params)
 	})
     const data = await response.json();
+    // returning json data
     return data;
 }
