@@ -19,9 +19,9 @@ export const handler = async(event, context, callback) => {
 	let jsonResult = {}
 	try{
 		let longestIdleAgentIndex = 0
-		let dateTime = "2000-07-28T08:08:33.720Z"
+		let dateTime = "9999-07-28T08:08:33.720Z"
 		for(let i=0; i<getSlaDetails.results.length; i++){
-			if(dateTime<getSlaDetails.results[i].entities[0].activityDate){
+			if(dateTime>getSlaDetails.results[i].entities[0].activityDate){
 				dateTime = getSlaDetails.results[i].entities[0].activityDate
 				longestIdleAgentIndex = i
 			}
